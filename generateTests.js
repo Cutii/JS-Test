@@ -2,10 +2,11 @@ const fs = require('fs');
 
 const stream = fs.createWriteStream("index.test.js");
 stream.write('const findBestSpot = require("./index.js");\n\n');
+stream.write('const table = [\n');
 
 function createRandomTest(title) {
-  const a = getRandomInt(100);
-  const b = getRandomInt(100);
+  const a = getRandomInt(20);
+  const b = getRandomInt(20);
   const x = getRandomInt(a);
   const y = getRandomInt(b);
   const n = getRandomInt(a*b);
@@ -24,7 +25,7 @@ function createPrebuildTest(a, b, x, y, n, title) {
     }
   }
   const result = resolve(a,b,x,y,list);
-  stream.write(`test('${title}', () => expect(findBestSpot(${a}, ${b}, ${x}, ${y}, ${JSON.stringify(list)})).toEqual(${JSON.stringify(result)}));\n\n`);
+  stream.write(`["${title}",${a},${b},${x},${y},${JSON.stringify(list)}, ${JSON.stringify(result)}],\n`);
 }
 
 function getRandomInt(max) {
@@ -32,6 +33,7 @@ function getRandomInt(max) {
 }
 
 function resolve(a, b, x, y, list) {
+  if(!(a*b*x*y)) return 'no spot';
   const map = [];
   list.forEach(mine => {
     map[mine.x] = map[mine.x] || [];
@@ -70,7 +72,15 @@ createPrebuildTest(1, 2, 1, 2, 1, 'two spaces, one mine');
 createPrebuildTest(2, 2, 1, 1, 8, 'multiple options');
 createPrebuildTest(1, 10, 1, 3, 10, 'one row');
 createPrebuildTest(10, 1, 3, 1, 10, 'one column');
+createPrebuildTest(50, 50, 25, 25, 50, 'large numbers');
 
 for(id=0;id<20;id++) {
   createRandomTest(id);
 }
+
+stream.write(`];
+
+test.each(table)('%s', (name, a, b, x, y, list, result) => {
+  expect(findBestSpot(a, b, x, y, list)).toEqual(result);
+});
+`);

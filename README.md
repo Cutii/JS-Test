@@ -30,7 +30,13 @@ Your method `findBestSpot` should return an object containing the following prop
 * `coordinates` : the coordinates of the top-left corner of your future exploitation
 * `goldMines` : the number of gold mines you will be owning
 
+If `landWidth`, `landHeight`, `exploitationWidth` or `exploitationHeight` worth 0, your program should answer 'no spot'.
+
 **IMPORTANT** if there is more than one solution, your program should return the solution with the lowest values for `x`, and for `y` with this priority. For instance, if possible coordinates are `(1,2)`, `(2,1)` and `(2,2)`, your program should return `(1,2)` as coordinates for your exploitation.
+
+* You can safely assume that all the types provided will be respected. No need to test that integers are really integers.
+* You can safely assume that the gold mines coordinates will remain within the range of the land
+* The gold mines list will never contains twice the same mine.
 
 ## Get started
 
